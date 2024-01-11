@@ -1,0 +1,7 @@
+src/
+pkg/
+*.pkg.tar.*
+*.log
+*.orig
+*.rej
+linux-*.tar.*
