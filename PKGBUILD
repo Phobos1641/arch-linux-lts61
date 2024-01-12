@@ -69,6 +69,10 @@ prepare() {
   make olddefconfig
   diff -u ../config .config || :
 
+  if [[ -e "${HOME}"/.config/modprobed.db ]]; then
+    make LSMOD="${HOME}"/.config/modprobed.db localmodconfig
+  fi
+
   make -s kernelrelease > version
   echo "Prepared $pkgbase version $(<version)"
 }
