@@ -19,7 +19,7 @@ makedepends=(
   tar
   xz
 )
-options=('!strip')
+options=('!strip' '!ccache')
 _srcname=linux-$pkgver
 _srctag=v$pkgver
 source=(
