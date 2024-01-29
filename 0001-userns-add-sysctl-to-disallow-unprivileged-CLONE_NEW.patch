@@ -1,17 +1,21 @@
-From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: "Jan Alexander Steffens (heftig)" <jan.steffens@gmail.com>
-Date: Mon, 16 Sep 2019 04:53:20 +0200
-Subject: [PATCH] ZEN: Add sysctl and CONFIG to disallow unprivileged
- CLONE_NEWUSER
+From b9a90b28e42ae36e8799efa0d2eb2ced37d43836 Mon Sep 17 00:00:00 2001
+From: Serge Hallyn <serge.hallyn@canonical.com>
+Date: Fri, 31 May 2013 19:12:12 +0100
+Subject: [PATCH 1/7] userns: add sysctl to disallow unprivileged CLONE_NEWUSER
+ by default
 
-Our default behavior continues to match the vanilla kernel.
+Signed-off-by: Serge Hallyn <serge.hallyn@ubuntu.com>
+[bwh: Remove unneeded binary sysctl bits]
+Signed-off-by: Daniel Micay <danielmicay@gmail.com>
+[thibaut.sautereau@ssi.gouv.fr: Adapt to sysctl code refactoring]
+Signed-off-by: Thibaut Sautereau <thibaut.sautereau@ssi.gouv.fr>
+Signed-off-by: Levente Polyak <levente@leventepolyak.net>
 ---
  include/linux/user_namespace.h |  4 ++++
- init/Kconfig                   | 16 ++++++++++++++++
- kernel/fork.c                  | 14 ++++++++++++++
+ kernel/fork.c                  | 11 +++++++++++
  kernel/sysctl.c                | 12 ++++++++++++
- kernel/user_namespace.c        |  7 +++++++
- 5 files changed, 53 insertions(+)
+ kernel/user_namespace.c        |  3 +++
+ 4 files changed, 30 insertions(+)
 
 diff --git a/include/linux/user_namespace.h b/include/linux/user_namespace.h
 index 45f09bec02c4..87b20e2ee274 100644
@@ -35,49 +39,19 @@ index 45f09bec02c4..87b20e2ee274 100644
  static inline struct user_namespace *get_user_ns(struct user_namespace *ns)
  {
  	return &init_user_ns;
-diff --git a/init/Kconfig b/init/Kconfig
-index de255842f5d0..4e028c5c976b 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -1248,6 +1248,22 @@ config USER_NS
- 
- 	  If unsure, say N.
- 
-+config USER_NS_UNPRIVILEGED
-+	bool "Allow unprivileged users to create namespaces"
-+	default y
-+	depends on USER_NS
-+	help
-+	  When disabled, unprivileged users will not be able to create
-+	  new namespaces. Allowing users to create their own namespaces
-+	  has been part of several recent local privilege escalation
-+	  exploits, so if you need user namespaces but are
-+	  paranoid^Wsecurity-conscious you want to disable this.
-+
-+	  This setting can be overridden at runtime via the
-+	  kernel.unprivileged_userns_clone sysctl.
-+
-+	  If unsure, say Y.
-+
- config PID_NS
- 	bool "PID Namespaces"
- 	default y
 diff --git a/kernel/fork.c b/kernel/fork.c
-index 41950ff90aa3..af4961b85f91 100644
+index 85617928041c..479f2119096f 100644
 --- a/kernel/fork.c
 +++ b/kernel/fork.c
-@@ -98,6 +98,10 @@
- #include <linux/io_uring.h>
- #include <linux/bpf.h>
- 
-+#ifdef CONFIG_USER_NS
+@@ -82,6 +82,7 @@
+ #include <linux/perf_event.h>
+ #include <linux/posix-timers.h>
+ #include <linux/user-return-notifier.h>
 +#include <linux/user_namespace.h>
-+#endif
-+
- #include <asm/pgalloc.h>
- #include <linux/uaccess.h>
- #include <asm/mmu_context.h>
-@@ -2014,6 +2018,10 @@ static __latent_entropy struct task_struct *copy_process(
+ #include <linux/oom.h>
+ #include <linux/khugepaged.h>
+ #include <linux/signalfd.h>
+@@ -2022,6 +2023,10 @@ static __latent_entropy struct task_struct *copy_process(
  	if ((clone_flags & (CLONE_NEWUSER|CLONE_FS)) == (CLONE_NEWUSER|CLONE_FS))
  		return ERR_PTR(-EINVAL);
  
@@ -88,7 +62,7 @@ index 41950ff90aa3..af4961b85f91 100644
  	/*
  	 * Thread groups must share signals as well, and detached threads
  	 * can only be started up within the thread group.
-@@ -3173,6 +3181,12 @@ int ksys_unshare(unsigned long unshare_flags)
+@@ -3181,6 +3186,12 @@ int ksys_unshare(unsigned long unshare_flags)
  	if (unshare_flags & CLONE_NEWNS)
  		unshare_flags |= CLONE_FS;
  
@@ -132,20 +106,19 @@ index c6d9dec11b74..9a4514ad481b 100644
  	{
  		.procname	= "tainted",
 diff --git a/kernel/user_namespace.c b/kernel/user_namespace.c
-index 54211dbd516c..16ca0c151629 100644
+index 54211dbd516c..47c420be8da3 100644
 --- a/kernel/user_namespace.c
 +++ b/kernel/user_namespace.c
-@@ -22,6 +22,13 @@
+@@ -22,6 +22,9 @@
  #include <linux/bsearch.h>
  #include <linux/sort.h>
  
 +/* sysctl */
-+#ifdef CONFIG_USER_NS_UNPRIVILEGED
-+int unprivileged_userns_clone = 1;
-+#else
 +int unprivileged_userns_clone;
-+#endif
 +
  static struct kmem_cache *user_ns_cachep __read_mostly;
  static DEFINE_MUTEX(userns_state_mutex);
  
+-- 
+2.43.0
+

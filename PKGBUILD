@@ -3,7 +3,7 @@
 
 pkgbase=linux-lts61
 pkgver=6.1.75
-pkgrel=1
+pkgrel=2
 pkgdesc='LTS Linux (6.1)'
 url='https://www.kernel.org'
 arch=(x86_64)
@@ -24,8 +24,14 @@ _srcname=linux-$pkgver
 _srctag=v$pkgver
 source=(
   https://cdn.kernel.org/pub/linux/kernel/v${pkgver%%.*}.x/${_srcname}.tar.{xz,sign}
-  0001-ZEN-Add-sysctl-and-CONFIG-to-disallow-unprivileged-C.patch
   config  # the main kernel config file
+  0001-userns-add-sysctl-to-disallow-unprivileged-CLONE_NEW.patch
+  0002-userns-add-kconfig-to-set-default-for-unprivileged-C.patch
+  0003-sysctl-expose-proc_dointvec_minmax_sysadmin-as-API-f.patch
+  0004-restrict-device-timing-side-channels.patch
+  0005-usb-add-toggle-for-disabling-newly-added-USB-devices.patch
+  0006-usb-implement-dedicated-subsystem-sysctl-tables.patch
+  0007-net-tcp-add-option-to-disable-TCP-simultaneous-conne.patch
 )
 validpgpkeys=(
   ABAF11C65A2970B130ABE3C479BE3E4300411886  # Linus Torvalds
@@ -34,8 +40,14 @@ validpgpkeys=(
 # https://www.kernel.org/pub/linux/kernel/v6.x/sha256sums.asc
 sha256sums=('6cd19410330c13ec4c18fd28a83d3e40fc12a152815fb7c3e1b0764329093a56'
             'SKIP'
-            '21195509fded29d0256abfce947b5a8ce336d0d3e192f3f8ea90bde9dd95a889'
-            '93f2304556bff4b287a4219ecb58b1c352c6be8aebda654f140df17c06a9461f')
+            '93f2304556bff4b287a4219ecb58b1c352c6be8aebda654f140df17c06a9461f'
+            'da5690e9fcf17717e93af083fa21c5cb12880e8a36a00738c9ca82bd3af4ac71'
+            '5596a05b9aa2567c5ea9870da36b95f3c1d820b1fd36bc44378040d70119b431'
+            'b438a95d3521c71efb340ef9520670a356afc5f0ecfaa5f49fc9912496700384'
+            '64d440f5088f404b04da205204d98e897a1565cbc3cc1d22576854f58c554e41'
+            '8c7543e64c45e2da634dc7e3eef35ddcc0f05769f4b3594070892518b36543cb'
+            '6541b8bd6f5c2a4c09552f68d67e7c06cbadadfff298a4ba6bfa761a340c37c5'
+            'c944451be1bc7ddaebbff3f7c271164b1b3b1f02d1f2b0a3ab0f903f3006a220')
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase

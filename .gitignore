@@ -4,4 +4,5 @@ pkg/
 *.log
 *.orig
 *.rej
+linux/
 linux-*.tar.*
