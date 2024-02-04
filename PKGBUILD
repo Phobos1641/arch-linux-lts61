@@ -32,6 +32,7 @@ source=(
   0005-usb-add-toggle-for-disabling-newly-added-USB-devices.patch
   0006-usb-implement-dedicated-subsystem-sysctl-tables.patch
   0007-net-tcp-add-option-to-disable-TCP-simultaneous-conne.patch
+  0008-Export-__rcu_read_-lock-unlock.patch
 )
 validpgpkeys=(
   ABAF11C65A2970B130ABE3C479BE3E4300411886  # Linus Torvalds
@@ -47,7 +48,8 @@ sha256sums=('0580cc0e81ff9aee245f79531d8c1c5c7d711eee227cd4cf52d1ff335727b1fd'
             '64d440f5088f404b04da205204d98e897a1565cbc3cc1d22576854f58c554e41'
             '8c7543e64c45e2da634dc7e3eef35ddcc0f05769f4b3594070892518b36543cb'
             '6541b8bd6f5c2a4c09552f68d67e7c06cbadadfff298a4ba6bfa761a340c37c5'
-            'c944451be1bc7ddaebbff3f7c271164b1b3b1f02d1f2b0a3ab0f903f3006a220')
+            'c944451be1bc7ddaebbff3f7c271164b1b3b1f02d1f2b0a3ab0f903f3006a220'
+            '0a2cd50dbbbc9f0d7d2a006a75f7c0b1cb1b2a98aef4f8dbe14817f88d69798a')
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
