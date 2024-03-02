@@ -3,7 +3,7 @@
 
 pkgbase=linux-lts61
 pkgver=6.1.79
-pkgrel=1
+pkgrel=2
 pkgdesc='LTS Linux (6.1)'
 url='https://www.kernel.org'
 arch=(x86_64)
@@ -33,6 +33,7 @@ source=(
   0006-usb-implement-dedicated-subsystem-sysctl-tables.patch
   0007-net-tcp-add-option-to-disable-TCP-simultaneous-conne.patch
   0008-Export-__rcu_read_-lock-unlock.patch
+  0009-arch-Kconfig-Default-to-maximum-amount-of-ASLR-bits.patch
 )
 validpgpkeys=(
   ABAF11C65A2970B130ABE3C479BE3E4300411886  # Linus Torvalds
@@ -41,7 +42,7 @@ validpgpkeys=(
 # https://www.kernel.org/pub/linux/kernel/v6.x/sha256sums.asc
 sha256sums=('faa49ca22fb55ed4d5ca2a55e07dd10e4e171cfc3b92568a631453cd2068b39b'
             'SKIP'
-            '93f2304556bff4b287a4219ecb58b1c352c6be8aebda654f140df17c06a9461f'
+            '177cdd52522775f07e020d37681f9f99717848a0d81a1a9a7c74d2896a982086'
             'da5690e9fcf17717e93af083fa21c5cb12880e8a36a00738c9ca82bd3af4ac71'
             '5596a05b9aa2567c5ea9870da36b95f3c1d820b1fd36bc44378040d70119b431'
             'b438a95d3521c71efb340ef9520670a356afc5f0ecfaa5f49fc9912496700384'
@@ -49,7 +50,8 @@ sha256sums=('faa49ca22fb55ed4d5ca2a55e07dd10e4e171cfc3b92568a631453cd2068b39b'
             '8c7543e64c45e2da634dc7e3eef35ddcc0f05769f4b3594070892518b36543cb'
             '6541b8bd6f5c2a4c09552f68d67e7c06cbadadfff298a4ba6bfa761a340c37c5'
             'c944451be1bc7ddaebbff3f7c271164b1b3b1f02d1f2b0a3ab0f903f3006a220'
-            '0a2cd50dbbbc9f0d7d2a006a75f7c0b1cb1b2a98aef4f8dbe14817f88d69798a')
+            '0a2cd50dbbbc9f0d7d2a006a75f7c0b1cb1b2a98aef4f8dbe14817f88d69798a'
+            'fedc0234ecae0aa2b38b910c3b7b9043fc86076ba8ce05ca3aa04e4219b3172b')
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
