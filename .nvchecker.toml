@@ -1,0 +1,9 @@
+[linux-lts61]
+
+source = "git"
+git = "https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git"
+
+branch = "linux-6.1.y"
+prefix = "v"
+include_regex = "v6\\.1\\.[0-9]+"
+exclude_regex = ".*(rc|alpha|beta).*"
