@@ -3,7 +3,7 @@
 
 pkgbase=linux-lts61
 pkgver=6.1.86
-pkgrel=1
+pkgrel=2
 pkgdesc='LTS Linux (6.1)'
 url='https://www.kernel.org'
 arch=(x86_64)
@@ -34,6 +34,7 @@ source=(
   0007-net-tcp-add-option-to-disable-TCP-simultaneous-conne.patch
   0008-Export-__rcu_read_-lock-unlock.patch
   0009-arch-Kconfig-Default-to-maximum-amount-of-ASLR-bits.patch
+  0010-io_uring-add-a-sysctl-to-disable-io_uring-system-wid.patch
 )
 validpgpkeys=(
   ABAF11C65A2970B130ABE3C479BE3E4300411886  # Linus Torvalds
@@ -51,7 +52,8 @@ sha256sums=('d3d3c8c44f0f0a870a95bd2823f9d91979d1aa6f266da5d8cccd0c4b15e3115b'
             '6541b8bd6f5c2a4c09552f68d67e7c06cbadadfff298a4ba6bfa761a340c37c5'
             'c944451be1bc7ddaebbff3f7c271164b1b3b1f02d1f2b0a3ab0f903f3006a220'
             '0a2cd50dbbbc9f0d7d2a006a75f7c0b1cb1b2a98aef4f8dbe14817f88d69798a'
-            'fedc0234ecae0aa2b38b910c3b7b9043fc86076ba8ce05ca3aa04e4219b3172b')
+            'fedc0234ecae0aa2b38b910c3b7b9043fc86076ba8ce05ca3aa04e4219b3172b'
+            '0243fd466afd5b0b52ebde0c18558fbc01bad6320e03996cb9fc8fd8cc28afbb')
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
