@@ -18,12 +18,6 @@ makedepends=(
   python
   tar
   xz
-
-  # htmldocs
-  graphviz
-  imagemagick
-  python-sphinx
-  texlive-latexextra
 )
 options=('!strip' '!ccache')
 _srcname=linux-$pkgver
@@ -65,6 +59,12 @@ export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
 export KBUILD_BUILD_TIMESTAMP="$(date -Ru${SOURCE_DATE_EPOCH:+d @$SOURCE_DATE_EPOCH})"
 
+if [[ "$BUILD_DOCS" == "1" || "${BUILD_DOCS^^}" =~ ^"Y" ]]; then
+  BUILD_DOCS=1
+else
+  BUILD_DOCS=0
+fi
+
 prepare() {
   cd $_srcname
 
@@ -98,7 +98,10 @@ prepare() {
 build() {
   cd $_srcname
   make all
-  make htmldocs
+
+  if test $BUILD_DOCS -eq 1; then
+    make htmldocs
+  fi
 }
 
 _package() {
@@ -244,8 +247,20 @@ _package-docs() {
 pkgname=(
   "$pkgbase"
   "$pkgbase-headers"
-  "$pkgbase-docs"
 )
+if test $BUILD_DOCS -eq 1; then
+  pkgname+=(
+    "$pkgbase-docs"
+  )
+
+  makedepends+=(
+    # htmldocs
+    graphviz
+    imagemagick
+    python-sphinx
+    texlive-latexextra
+  )
+fi
 for _p in "${pkgname[@]}"; do
   eval "package_$_p() {
     $(declare -f "_package${_p#$pkgbase}")
