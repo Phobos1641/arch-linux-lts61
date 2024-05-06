@@ -35,6 +35,8 @@ source=(
   0008-Export-__rcu_read_-lock-unlock.patch
   0009-arch-Kconfig-Default-to-maximum-amount-of-ASLR-bits.patch
   0010-io_uring-add-a-sysctl-to-disable-io_uring-system-wid.patch
+  Sphinx-7.2.2-8.0-PosixPath.patch
+  Sphinx-reprunicode.patch
 )
 validpgpkeys=(
   ABAF11C65A2970B130ABE3C479BE3E4300411886  # Linus Torvalds
@@ -53,7 +55,9 @@ sha256sums=('83a3d72e764fceda2c1fc68a4ea6b91253a28da56a688a2b61776b0d19788e1d'
             'c944451be1bc7ddaebbff3f7c271164b1b3b1f02d1f2b0a3ab0f903f3006a220'
             '0a2cd50dbbbc9f0d7d2a006a75f7c0b1cb1b2a98aef4f8dbe14817f88d69798a'
             'fedc0234ecae0aa2b38b910c3b7b9043fc86076ba8ce05ca3aa04e4219b3172b'
-            '0243fd466afd5b0b52ebde0c18558fbc01bad6320e03996cb9fc8fd8cc28afbb')
+            '0243fd466afd5b0b52ebde0c18558fbc01bad6320e03996cb9fc8fd8cc28afbb'
+            '08ef05d8a4fc8117d131f219d753caa138a0fb7c8f00690ff6dc35ac6aacdb83'
+            '483693eb475bccbeafaabff503a21d559c84f61a4dc1816c745cd96dbe490465')
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
