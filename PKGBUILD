@@ -2,7 +2,7 @@
 # Contributor: Andreas Radke <andyrtr@archlinux.org>
 
 pkgbase=linux-lts61
-pkgver=6.1.91
+pkgver=6.1.92
 pkgrel=1
 pkgdesc='LTS Linux (6.1)'
 url='https://www.kernel.org'
@@ -35,15 +35,13 @@ source=(
   0008-Export-__rcu_read_-lock-unlock.patch
   0009-arch-Kconfig-Default-to-maximum-amount-of-ASLR-bits.patch
   0010-io_uring-add-a-sysctl-to-disable-io_uring-system-wid.patch
-  Sphinx-7.2.2-8.0-PosixPath.patch
-  Sphinx-reprunicode.patch
 )
 validpgpkeys=(
   ABAF11C65A2970B130ABE3C479BE3E4300411886  # Linus Torvalds
   647F28654894E3BD457199BE38DBBDC86092693E  # Greg Kroah-Hartman
 )
 # https://www.kernel.org/pub/linux/kernel/v6.x/sha256sums.asc
-sha256sums=('880ace63ca2291b8b639e9bd862cc828649d3e1e00ccfee5861473debd2e4dec'
+sha256sums=('9019f427bfdc9ced5bc954d760d37ac08c0cdffb45ad28087fc45a73e64336c9'
             'SKIP'
             '6937cb5aea9bcb045e353518de276da1593693eb2a38e9ce9a560f621e54a505'
             'da5690e9fcf17717e93af083fa21c5cb12880e8a36a00738c9ca82bd3af4ac71'
@@ -55,9 +53,7 @@ sha256sums=('880ace63ca2291b8b639e9bd862cc828649d3e1e00ccfee5861473debd2e4dec'
             'c944451be1bc7ddaebbff3f7c271164b1b3b1f02d1f2b0a3ab0f903f3006a220'
             '0a2cd50dbbbc9f0d7d2a006a75f7c0b1cb1b2a98aef4f8dbe14817f88d69798a'
             'fedc0234ecae0aa2b38b910c3b7b9043fc86076ba8ce05ca3aa04e4219b3172b'
-            '0243fd466afd5b0b52ebde0c18558fbc01bad6320e03996cb9fc8fd8cc28afbb'
-            '08ef05d8a4fc8117d131f219d753caa138a0fb7c8f00690ff6dc35ac6aacdb83'
-            '483693eb475bccbeafaabff503a21d559c84f61a4dc1816c745cd96dbe490465')
+            '0243fd466afd5b0b52ebde0c18558fbc01bad6320e03996cb9fc8fd8cc28afbb')
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
