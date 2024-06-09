@@ -43,7 +43,7 @@ validpgpkeys=(
 # https://www.kernel.org/pub/linux/kernel/v6.x/sha256sums.asc
 sha256sums=('9019f427bfdc9ced5bc954d760d37ac08c0cdffb45ad28087fc45a73e64336c9'
             'SKIP'
-            '77bec4213e722a6f9c606d6ee027802016d52ab527c73c99288a9dccf73597ff'
+            '67d97de116b647ebee51304837ab9f8424c43f75db81e6a4c4a1cc65b8b78586'
             'da5690e9fcf17717e93af083fa21c5cb12880e8a36a00738c9ca82bd3af4ac71'
             '5596a05b9aa2567c5ea9870da36b95f3c1d820b1fd36bc44378040d70119b431'
             'b438a95d3521c71efb340ef9520670a356afc5f0ecfaa5f49fc9912496700384'
