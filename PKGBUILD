@@ -35,6 +35,7 @@ source=(
   0008-Export-__rcu_read_-lock-unlock.patch
   0009-arch-Kconfig-Default-to-maximum-amount-of-ASLR-bits.patch
   0010-io_uring-add-a-sysctl-to-disable-io_uring-system-wid.patch
+  0011-Export-follow_pte.patch
 )
 validpgpkeys=(
   ABAF11C65A2970B130ABE3C479BE3E4300411886  # Linus Torvalds
@@ -53,7 +54,8 @@ sha256sums=('b9aa6ec1a00f234d6c6f2d428fbb0a6bf459606c259263df978f86685b65a8b9'
             'c944451be1bc7ddaebbff3f7c271164b1b3b1f02d1f2b0a3ab0f903f3006a220'
             '0a2cd50dbbbc9f0d7d2a006a75f7c0b1cb1b2a98aef4f8dbe14817f88d69798a'
             'fedc0234ecae0aa2b38b910c3b7b9043fc86076ba8ce05ca3aa04e4219b3172b'
-            '0243fd466afd5b0b52ebde0c18558fbc01bad6320e03996cb9fc8fd8cc28afbb')
+            '0243fd466afd5b0b52ebde0c18558fbc01bad6320e03996cb9fc8fd8cc28afbb'
+            '5b01b2ef14de7dfca746c25e466e78f9c8d056fd3399756530546621fb2b01f5')
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase

@@ -1,0 +1,25 @@
+From 08f65c78a00f25f2ea7dc6006d33fde54b8fc7ef Mon Sep 17 00:00:00 2001
+From: Phobos <Phobos1641@proton.me>
+Date: Sat, 20 Jul 2024 05:57:26 +0000
+Subject: [PATCH] Export follow_pte
+
+---
+ mm/memory.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/mm/memory.c b/mm/memory.c
+index 301c74c44438..049369a7fa10 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -5543,7 +5543,7 @@ int follow_pte(struct mm_struct *mm, unsigned long address,
+ out:
+ 	return -EINVAL;
+ }
+-EXPORT_SYMBOL_GPL(follow_pte);
++EXPORT_SYMBOL(follow_pte);
+ 
+ /**
+  * follow_pfn - look up PFN at a user virtual address
+-- 
+2.45.2
+
