@@ -220,8 +220,10 @@ _package-headers() {
     esac
   done < <(find "$builddir" -type f -perm -u+x ! -name vmlinux -print0)
 
-  echo "Stripping vmlinux..."
-  strip -v $STRIP_STATIC "$builddir/vmlinux"
+  if ! printf '%s\0' "${myarray[@]}" | grep -Fqxz -- '!strip'; then
+    echo "Stripping vmlinux..."
+    strip -v $STRIP_STATIC "$builddir/vmlinux"
+  fi
 
   echo "Adding symlink..."
   mkdir -p "$pkgdir/usr/src"
