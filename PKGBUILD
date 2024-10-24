@@ -37,6 +37,7 @@ source=(
   0010-io_uring-add-a-sysctl-to-disable-io_uring-system-wid.patch
   0011-Export-follow_pte.patch
   0012-Revert-kbuild-Hack-for-depmod-not-handling-X.Y-versi.patch
+  0013-fs-overlayfs-change-xino-print-to-a-pr_debug.patch
 )
 validpgpkeys=(
   ABAF11C65A2970B130ABE3C479BE3E4300411886  # Linus Torvalds
@@ -57,7 +58,8 @@ sha256sums=('2286e4a02ea2fbe65023dbf779f20aa994ba2b8d37ed559049378089451aa256'
             'fedc0234ecae0aa2b38b910c3b7b9043fc86076ba8ce05ca3aa04e4219b3172b'
             '0243fd466afd5b0b52ebde0c18558fbc01bad6320e03996cb9fc8fd8cc28afbb'
             '5b01b2ef14de7dfca746c25e466e78f9c8d056fd3399756530546621fb2b01f5'
-            '164e279875c6dc2ffc9007a8f74b25030feea34724f374d4bfc92d232f82d0ce')
+            '164e279875c6dc2ffc9007a8f74b25030feea34724f374d4bfc92d232f82d0ce'
+            'a1e8bb19a238a91178e2aac2a61e657d03c1df343298ef1ad21a722cc0e6af83')
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase

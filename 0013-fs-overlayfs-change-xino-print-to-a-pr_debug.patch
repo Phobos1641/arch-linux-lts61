@@ -1,0 +1,34 @@
+From 2f2bf04c3e17f3c6ee8fb85ed9c57253113918f2 Mon Sep 17 00:00:00 2001
+From: Phobos <Phobos1641@proton.me>
+Date: Wed, 23 Oct 2024 17:06:32 +0000
+Subject: [PATCH] fs/overlayfs: change xino print to a pr_debug
+
+---
+ fs/overlayfs/super.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
+index 51eec4a8e82b..226e0dd336f7 100644
+--- a/fs/overlayfs/super.c
++++ b/fs/overlayfs/super.c
+@@ -1788,7 +1788,7 @@ static int ovl_get_layers(struct super_block *sb, struct ovl_fs *ofs,
+ 	 */
+ 	if (ofs->numfs - !ovl_upper_mnt(ofs) == 1) {
+ 		if (ofs->config.xino == OVL_XINO_ON)
+-			pr_info("\"xino=on\" is useless with all layers on same fs, ignore.\n");
++			pr_debug("\"xino=on\" is useless with all layers on same fs, ignore.\n");
+ 		ofs->xino_mode = 0;
+ 	} else if (ofs->config.xino == OVL_XINO_OFF) {
+ 		ofs->xino_mode = -1;
+@@ -1805,7 +1805,7 @@ static int ovl_get_layers(struct super_block *sb, struct ovl_fs *ofs,
+ 	}
+ 
+ 	if (ofs->xino_mode > 0) {
+-		pr_info("\"xino\" feature enabled using %d upper inode bits.\n",
++		pr_debug("\"xino\" feature enabled using %d upper inode bits.\n",
+ 			ofs->xino_mode);
+ 	}
+ 
+-- 
+2.47.0
+
