@@ -1,0 +1,24 @@
+From 287859804d436869a3cfa309f94861b644627ecd Mon Sep 17 00:00:00 2001
+From: Phobos <Phobos1641@proton.me>
+Date: Tue, 6 May 2025 16:18:58 +0000
+Subject: [PATCH] x86/realmode: ensure -std=gnu11
+
+---
+ arch/x86/Makefile | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/arch/x86/Makefile b/arch/x86/Makefile
+index 3419ffa2a350..d2cd26443bf2 100644
+--- a/arch/x86/Makefile
++++ b/arch/x86/Makefile
+@@ -53,6 +53,7 @@ REALMODE_CFLAGS += -fno-stack-protector
+ REALMODE_CFLAGS += -Wno-address-of-packed-member
+ REALMODE_CFLAGS += $(cc_stack_align4)
+ REALMODE_CFLAGS += $(CLANG_FLAGS)
++REALMODE_CFLAGS += -std=gnu11
+ export REALMODE_CFLAGS
+ 
+ # BITS is used as extension for files which are available in a 32 bit
+-- 
+2.49.0
+
