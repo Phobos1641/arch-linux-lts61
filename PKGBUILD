@@ -19,7 +19,7 @@ makedepends=(
   tar
   xz
 )
-options=('!strip' '!ccache')
+options=('!strip' '!ccache') # !strip-vmlinux
 _srcname=linux-$pkgver
 _srctag=v$pkgver
 source=(
@@ -226,7 +226,7 @@ _package-headers() {
     esac
   done < <(find "$builddir" -type f -perm -u+x ! -name vmlinux -print0)
 
-  if ! printf '%s\0' "${options[@]}" | grep -Fqxz -- '!strip'; then
+  if ! printf '%s\0' "${options[@]}" | grep -Fqxz -- '!strip-vmlinux'; then
     echo "Stripping vmlinux..."
     strip -v $STRIP_STATIC "$builddir/vmlinux"
   fi
