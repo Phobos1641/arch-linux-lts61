@@ -3,7 +3,7 @@
 
 pkgbase=linux-lts61
 pkgver=6.1.142
-pkgrel=1
+pkgrel=2
 pkgdesc='LTS Linux (6.1)'
 url='https://www.kernel.org'
 arch=(x86_64)
@@ -51,7 +51,7 @@ validpgpkeys=(
 # https://www.kernel.org/pub/linux/kernel/v6.x/sha256sums.asc
 sha256sums=('dcd26ea135c96bddbb17131f96176bca1a9268ea0e1cb96dfb7d6970780fa3aa'
             'SKIP'
-            'fe2d89ed7924deefaf7d00937d126c0349de0bb03d33e456a79f4f401d405777'
+            'ae331e14a043e37eef8463a42df284c831967b218c707b22210ccd6abb1eb622'
             'da5690e9fcf17717e93af083fa21c5cb12880e8a36a00738c9ca82bd3af4ac71'
             '5596a05b9aa2567c5ea9870da36b95f3c1d820b1fd36bc44378040d70119b431'
             'b438a95d3521c71efb340ef9520670a356afc5f0ecfaa5f49fc9912496700384'
