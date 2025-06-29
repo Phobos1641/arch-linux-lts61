@@ -1,0 +1,50 @@
+From bad47761d35de5b3005c5fd96b666ab4077b1dd0 Mon Sep 17 00:00:00 2001
+From: Phobos <Phobos1641@proton.me>
+Date: Fri, 6 Jun 2025 15:53:53 +0000
+Subject: [PATCH 3/3] Add CONFIG_CC_SWING_MODULU_SCHEDULING
+
+---
+ Makefile     | 7 +++++++
+ init/Kconfig | 8 ++++++++
+ 2 files changed, 15 insertions(+)
+
+diff --git a/Makefile b/Makefile
+index 44f24266aab0..174722935718 100644
+--- a/Makefile
++++ b/Makefile
+@@ -837,6 +837,13 @@ KBUILD_CFLAGS += -Os
+ KBUILD_RUSTFLAGS += -Copt-level=s
+ endif
+ 
++ifdef CONFIG_CC_SWING_MODULU_SCHEDULING
++# Perform swing modulo scheduling immediately before the first scheduling pass.
++# This pass looks at innermost loops and reorders their instructions by
++# overlapping different iterations.
++KBUILD_CFLAGS += $(call cc-option,-fmodulo-sched -fmodulo-sched-allow-regmoves -fivopts)
++endif
++
+ # Always set `debug-assertions` and `overflow-checks` because their default
+ # depends on `opt-level` and `debug-assertions`, respectively.
+ KBUILD_RUSTFLAGS += -Cdebug-assertions=$(if $(CONFIG_RUST_DEBUG_ASSERTIONS),y,n)
+diff --git a/init/Kconfig b/init/Kconfig
+index b819a7c0208f..ee7f2f50ef7c 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -1454,6 +1454,14 @@ config CC_OPTIMIZE_FOR_SIZE
+ 
+ endchoice
+ 
++config CC_SWING_MODULU_SCHEDULING
++	bool "Perform swing modulo scheduling"
++	depends on EXPERT
++	default n
++	help
++	  Enables the -fmodulo-sched -fmodulo-sched-allow-regmoves -fivopts
++	  compiler compiler options.
++
+ config HAVE_LD_DEAD_CODE_DATA_ELIMINATION
+ 	bool
+ 	help
+-- 
+2.50.0
+

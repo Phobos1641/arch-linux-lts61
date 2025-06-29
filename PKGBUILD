@@ -39,6 +39,9 @@ source=(
   0012-Revert-kbuild-Hack-for-depmod-not-handling-X.Y-versi.patch
   0013-fs-overlayfs-change-xino-print-to-a-pr_debug.patch
   0014-x86-realmode-ensure-std-gnu11.patch
+  0015-kbuild-re-add-support-for-CONFIG_CC_OPTIMIZE_FOR_PER.patch
+  0016-Add-Nehalem-Sandy-Bridge-and-native-CPU-architecture.patch
+  0017-Add-CONFIG_CC_SWING_MODULU_SCHEDULING.patch
 )
 validpgpkeys=(
   ABAF11C65A2970B130ABE3C479BE3E4300411886  # Linus Torvalds
@@ -61,7 +64,10 @@ sha256sums=('dcd26ea135c96bddbb17131f96176bca1a9268ea0e1cb96dfb7d6970780fa3aa'
             '5b01b2ef14de7dfca746c25e466e78f9c8d056fd3399756530546621fb2b01f5'
             '164e279875c6dc2ffc9007a8f74b25030feea34724f374d4bfc92d232f82d0ce'
             'a1e8bb19a238a91178e2aac2a61e657d03c1df343298ef1ad21a722cc0e6af83'
-            'e41cc41416abe9b853bce1bdaccf5d5aaec1027ddfb7d28837e31c3d825ed6c0')
+            'e41cc41416abe9b853bce1bdaccf5d5aaec1027ddfb7d28837e31c3d825ed6c0'
+            'd6e3abcca0edefb6aa30c3a2474cf33ce17ef4c3ee60e61b4b7578ca90660cdd'
+            'b3f5d3bb1de17a07c344eeb081aa0ad4c51765651380ad9c84841ff25235a0ce'
+            '354a1d3350d42ac7a9c509f5d16aeaaa68b4402942c287322488993d61043cb6')
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
