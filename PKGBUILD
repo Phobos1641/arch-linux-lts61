@@ -3,7 +3,7 @@
 
 pkgbase=linux-lts61
 pkgver=6.1.147
-pkgrel=2
+pkgrel=3
 pkgdesc='LTS Linux (6.1)'
 url='https://www.kernel.org'
 arch=(x86_64)
@@ -39,9 +39,6 @@ source=(
   0012-Revert-kbuild-Hack-for-depmod-not-handling-X.Y-versi.patch
   0013-fs-overlayfs-change-xino-print-to-a-pr_debug.patch
   0014-x86-realmode-ensure-std-gnu11.patch
-  0015-kbuild-re-add-support-for-CONFIG_CC_OPTIMIZE_FOR_PER.patch
-  0016-Add-Nehalem-Sandy-Bridge-and-native-CPU-architecture.patch
-  0017-Add-CONFIG_CC_SWING_MODULU_SCHEDULING.patch
   0018-ntsync5.patch
 )
 validpgpkeys=(
@@ -66,9 +63,6 @@ sha256sums=('218f25663a41e3d811e84fa1c4acec50684898b2f6d0c8c0deb531d937e466f7'
             '164e279875c6dc2ffc9007a8f74b25030feea34724f374d4bfc92d232f82d0ce'
             'a1e8bb19a238a91178e2aac2a61e657d03c1df343298ef1ad21a722cc0e6af83'
             'e41cc41416abe9b853bce1bdaccf5d5aaec1027ddfb7d28837e31c3d825ed6c0'
-            'd6e3abcca0edefb6aa30c3a2474cf33ce17ef4c3ee60e61b4b7578ca90660cdd'
-            'f2b18c9a6c7b997235157fd105568a7a04b900c16d8e3ab26af4faf3a1331b70'
-            '354a1d3350d42ac7a9c509f5d16aeaaa68b4402942c287322488993d61043cb6'
             'c6bc50fc62e4465bac91a3f41107d984beeb31764077d42c4b79f371ab619133')
 
 export KBUILD_BUILD_HOST=archlinux
