@@ -2,7 +2,7 @@
 # Contributor: Andreas Radke <andyrtr@archlinux.org>
 
 pkgbase=linux-lts61
-pkgver=6.1.154
+pkgver=6.1.155
 pkgrel=1
 pkgdesc='LTS Linux (6.1)'
 url='https://www.kernel.org'
@@ -39,16 +39,15 @@ source=(
   0012-Revert-kbuild-Hack-for-depmod-not-handling-X.Y-versi.patch
   0013-fs-overlayfs-change-xino-print-to-a-pr_debug.patch
   0014-x86-realmode-ensure-std-gnu11.patch
-  0018-ntsync5.patch
 )
 validpgpkeys=(
   ABAF11C65A2970B130ABE3C479BE3E4300411886  # Linus Torvalds
   647F28654894E3BD457199BE38DBBDC86092693E  # Greg Kroah-Hartman
 )
 # https://www.kernel.org/pub/linux/kernel/v6.x/sha256sums.asc
-sha256sums=('6f1aba92c3d0d21299eebb73161a2056c7c78c6ee77462a7cb705bd8cca8b198'
+sha256sums=('c29387aeee085fbcbd91236224b9df805063bac43615e75cea2c6b29604a5c73'
             'SKIP'
-            '87551eb1bdc1fdfc3f31e11894f2c552857c26226076a81f471e85ed210e7938'
+            'dfd4b150151bec91662369b243180b2c0749ed9bb248dc562134be20f78518b5'
             'da5690e9fcf17717e93af083fa21c5cb12880e8a36a00738c9ca82bd3af4ac71'
             '5596a05b9aa2567c5ea9870da36b95f3c1d820b1fd36bc44378040d70119b431'
             'b438a95d3521c71efb340ef9520670a356afc5f0ecfaa5f49fc9912496700384'
@@ -62,8 +61,7 @@ sha256sums=('6f1aba92c3d0d21299eebb73161a2056c7c78c6ee77462a7cb705bd8cca8b198'
             '5b01b2ef14de7dfca746c25e466e78f9c8d056fd3399756530546621fb2b01f5'
             '164e279875c6dc2ffc9007a8f74b25030feea34724f374d4bfc92d232f82d0ce'
             'a1e8bb19a238a91178e2aac2a61e657d03c1df343298ef1ad21a722cc0e6af83'
-            'e41cc41416abe9b853bce1bdaccf5d5aaec1027ddfb7d28837e31c3d825ed6c0'
-            'c6bc50fc62e4465bac91a3f41107d984beeb31764077d42c4b79f371ab619133')
+            'e41cc41416abe9b853bce1bdaccf5d5aaec1027ddfb7d28837e31c3d825ed6c0')
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
