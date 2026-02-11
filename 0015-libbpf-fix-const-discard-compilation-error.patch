@@ -1,0 +1,31 @@
+From 82b9a9059b082a2c5eee38070e622a53966bf5d6 Mon Sep 17 00:00:00 2001
+From: Phobos <Phobos1641@proton.me>
+Date: Wed, 11 Feb 2026 16:56:45 +0000
+Subject: [PATCH] libbpf: fix const discard compilation error
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+libbpf.c: In function ‘resolve_full_path’:
+libbpf.c:10756:35: error: assignment discards ‘const’ qualifier from pointer target type [-Werror=discarded-qualifiers]
+10756 | next_path = strchr(s, ':');
+---
+ tools/lib/bpf/libbpf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index a0fb50718dae..a8c0f2425c89 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -10738,7 +10738,7 @@ static int resolve_full_path(const char *file, char *result, size_t result_sz)
+ 		if (!search_paths[i])
+ 			continue;
+ 		for (s = search_paths[i]; s != NULL; s = strchr(s, ':')) {
+-			char *next_path;
++			const char *next_path;
+ 			int seg_len;
+ 
+ 			if (s[0] == ':')
+-- 
+2.53.0
+

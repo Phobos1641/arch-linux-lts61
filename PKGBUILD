@@ -39,6 +39,7 @@ source=(
   0012-Revert-kbuild-Hack-for-depmod-not-handling-X.Y-versi.patch
   0013-fs-overlayfs-change-xino-print-to-a-pr_debug.patch
   0014-x86-realmode-ensure-std-gnu11.patch
+  0015-libbpf-fix-const-discard-compilation-error.patch
 )
 validpgpkeys=(
   ABAF11C65A2970B130ABE3C479BE3E4300411886  # Linus Torvalds
@@ -61,7 +62,8 @@ sha256sums=('fd2d033321bd15e0ad5669208b6e43f3f93ccecb059a512ca6b913ca940c38ea'
             '5b01b2ef14de7dfca746c25e466e78f9c8d056fd3399756530546621fb2b01f5'
             '164e279875c6dc2ffc9007a8f74b25030feea34724f374d4bfc92d232f82d0ce'
             'a1e8bb19a238a91178e2aac2a61e657d03c1df343298ef1ad21a722cc0e6af83'
-            'e41cc41416abe9b853bce1bdaccf5d5aaec1027ddfb7d28837e31c3d825ed6c0')
+            'e41cc41416abe9b853bce1bdaccf5d5aaec1027ddfb7d28837e31c3d825ed6c0'
+            '1fee1ee6e42cc8cd664400847f1f3d45bc1a18a399bb5325cf955719f584a816')
 
 export KBUILD_BUILD_HOST=archlinux
 export KBUILD_BUILD_USER=$pkgbase
