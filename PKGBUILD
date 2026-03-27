@@ -1,4 +1,4 @@
-# Maintainer: Phobos <phobos1641[at]noreply[dot]pm[dot]me>
+# Maintainer: Lysander Sokolov <kijinmaru[at]noreply[dot]pm[dot]me>
 # Contributor: Andreas Radke <andyrtr@archlinux.org>
 
 pkgbase=linux-lts61
