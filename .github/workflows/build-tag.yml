@@ -19,6 +19,13 @@ jobs:
       image: archlinux:latest
 
     steps:
+      - name: Initialize pacman keyring
+        # The archlinux Docker image ships without an initialized keyring,
+        # which causes archlinux-keyring's post-install hook to fail on upgrade.
+        run: |
+          pacman-key --init
+          pacman-key --populate archlinux
+
       - name: Update system and install build tools
         run: |
           pacman -Syu --noconfirm --needed base-devel git sudo
