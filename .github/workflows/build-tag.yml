@@ -42,7 +42,7 @@ jobs:
       - name: Give the builder user ownership of the workspace
         run: chown -R builder:builder "$GITHUB_WORKSPACE"
 
-      - name: Import GPG signing key
+      - name: Configure makepkg and import GPG signing key
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
@@ -68,7 +68,13 @@ jobs:
           KEY_ID=$(sudo -u builder gpg --list-secret-keys --with-colons \
                    | awk -F: '/^sec/ {print $5; exit}')
           echo "Using GPG key: $KEY_ID"
-          sudo -u builder bash -c "echo 'GPGKEY=\"$KEY_ID\"' > ~/.makepkg.conf"
+          # Write makepkg config: signing key, parallel compilation, parallel compression.
+          cat > /home/builder/.makepkg.conf <<EOF
+          GPGKEY="$KEY_ID"
+          MAKEFLAGS="-j$(nproc)"
+          COMPRESSZST=(zstd -c -z -q --threads=0 -)
+          EOF
+          chown builder:builder /home/builder/.makepkg.conf
 
           # Do a throwaway sign so gpg-agent caches the passphrase;
           # makepkg will then sign without any prompt.
