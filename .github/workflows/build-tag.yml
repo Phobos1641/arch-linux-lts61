@@ -1,0 +1,91 @@
+name: Build and Release Arch Package
+
+# Run when a version tag is pushed (e.g. v1.0.0) or manually from the Actions tab.
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+# Needed so the release step can create/upload to a GitHub Release.
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # Run every step inside an Arch container so we have pacman, makepkg, etc.
+    container:
+      image: archlinux:latest
+
+    steps:
+      - name: Update system and install build tools
+        run: |
+          pacman -Syu --noconfirm --needed base-devel git sudo
+
+      - name: Create a non-root user for makepkg
+        # makepkg refuses to run as root, so we create a passwordless sudoer.
+        run: |
+          useradd -m builder
+          echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Give the builder user ownership of the workspace
+        run: chown -R builder:builder "$GITHUB_WORKSPACE"
+
+      - name: Import GPG signing key
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: |
+          # Stage the key and passphrase as files owned by builder.
+          echo "$GPG_PRIVATE_KEY" > /tmp/private.key
+          echo "$GPG_PASSPHRASE" > /tmp/passphrase
+          chown builder:builder /tmp/private.key /tmp/passphrase
+          chmod 600 /tmp/private.key /tmp/passphrase
+
+          # Configure gpg for non-interactive signing and import the key.
+          sudo -u builder mkdir -p /home/builder/.gnupg
+          sudo -u builder chmod 700 /home/builder/.gnupg
+          sudo -u builder bash -c 'cat > ~/.gnupg/gpg-agent.conf <<EOF
+          allow-loopback-pinentry
+          default-cache-ttl 7200
+          max-cache-ttl 7200
+          EOF'
+          sudo -u builder bash -c 'echo "pinentry-mode loopback" > ~/.gnupg/gpg.conf'
+          sudo -u builder gpg --batch --import /tmp/private.key
+
+          # Find the imported key's ID and tell makepkg to use it.
+          KEY_ID=$(sudo -u builder gpg --list-secret-keys --with-colons \
+                   | awk -F: '/^sec/ {print $5; exit}')
+          echo "Using GPG key: $KEY_ID"
+          sudo -u builder bash -c "echo 'GPGKEY=\"$KEY_ID\"' > ~/.makepkg.conf"
+
+          # Do a throwaway sign so gpg-agent caches the passphrase;
+          # makepkg will then sign without any prompt.
+          echo test | sudo -u builder gpg --batch --pinentry-mode loopback \
+            --passphrase-file /tmp/passphrase \
+            --local-user "$KEY_ID" --output /dev/null --sign -
+
+          rm -f /tmp/private.key /tmp/passphrase
+
+      - name: Build and sign the package
+        env:
+          BUILD_DOCS: 1
+        # -s installs missing dependencies, --sign signs the built package.
+        run: sudo -u builder makepkg -s --noconfirm --clean --sign
+
+      - name: List build artifacts (for logs)
+        run: ls -lh *.pkg.tar.zst *.pkg.tar.zst.sig
+
+      - name: Attach package and signature to GitHub Release
+        # Only create a release when we were triggered by a tag push.
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            *.pkg.tar.zst
+            *.pkg.tar.zst.sig
+          generate_release_notes: true
