@@ -78,6 +78,22 @@ jobs:
 
           rm -f /tmp/private.key /tmp/passphrase
 
+      - name: Import upstream source signing keys
+        # Read validpgpkeys from the PKGBUILD and fetch each from a keyserver
+        # so makepkg can verify upstream source signatures (e.g. the kernel tarball).
+        run: |
+          sudo -u builder bash -c '
+            set -e
+            source ./PKGBUILD
+            if [ "${#validpgpkeys[@]}" -gt 0 ]; then
+              for key in "${validpgpkeys[@]}"; do
+                echo "Fetching $key"
+                gpg --keyserver hkps://keyserver.ubuntu.com --recv-keys "$key" \
+                  || gpg --keyserver hkps://keys.openpgp.org  --recv-keys "$key"
+              done
+            fi
+          '
+
       - name: Build and sign the package
         env:
           BUILD_DOCS: 1
