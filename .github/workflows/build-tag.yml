@@ -1,37 +1,36 @@
 name: Build and Release Arch Package
 
-# Run when a version tag is pushed (e.g. v1.0.0) or manually from the Actions tab.
 on:
   push:
     tags:
       - 'v*'
   workflow_dispatch:
 
-# Needed so the release step can create/upload to a GitHub Release.
 permissions:
   contents: write
 
 jobs:
+  # ---------------------------------------------------------------------------
+  # Build job: produces unsigned .pkg.tar.zst files and uploads them as
+  # workflow artifacts for the sign-and-release job to pick up.
+  # ---------------------------------------------------------------------------
   build:
     runs-on: ubuntu-latest
-    # Run every step inside an Arch container so we have pacman, makepkg, etc.
     container:
       image: archlinux:latest
 
     steps:
       - name: Initialize pacman keyring
-        # The archlinux Docker image ships without an initialized keyring,
-        # which causes archlinux-keyring's post-install hook to fail on upgrade.
         run: |
           pacman-key --init
           pacman-key --populate archlinux
 
       - name: Update system and install build tools
+        # ccache is installed here; we enable it in makepkg.conf below.
         run: |
-          pacman -Syu --noconfirm --needed base-devel git sudo
+          pacman -Syu --noconfirm --needed base-devel git sudo ccache
 
       - name: Create a non-root user for makepkg
-        # makepkg refuses to run as root, so we create a passwordless sudoer.
         run: |
           useradd -m builder
           echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
@@ -42,51 +41,37 @@ jobs:
       - name: Give the builder user ownership of the workspace
         run: chown -R builder:builder "$GITHUB_WORKSPACE"
 
-      - name: Configure makepkg and import GPG signing key
-        env:
-          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+      - name: Restore ccache
+        # The key changes every run (so a new cache entry is always saved),
+        # but restore-keys let us fall back to the most recent previous cache.
+        uses: actions/cache@v4
+        with:
+          path: /home/builder/.ccache
+          key: ccache-${{ runner.os }}-${{ hashFiles('PKGBUILD') }}-${{ github.run_id }}
+          restore-keys: |
+            ccache-${{ runner.os }}-${{ hashFiles('PKGBUILD') }}-
+            ccache-${{ runner.os }}-
+
+      - name: Configure makepkg and ccache
         run: |
-          # Stage the key and passphrase as files owned by builder.
-          echo "$GPG_PRIVATE_KEY" > /tmp/private.key
-          echo "$GPG_PASSPHRASE" > /tmp/passphrase
-          chown builder:builder /tmp/private.key /tmp/passphrase
-          chmod 600 /tmp/private.key /tmp/passphrase
+          # Ensure the ccache dir exists and is owned by builder.
+          mkdir -p /home/builder/.ccache
+          chown -R builder:builder /home/builder/.ccache
 
-          # Configure gpg for non-interactive signing and import the key.
-          sudo -u builder mkdir -p /home/builder/.gnupg
-          sudo -u builder chmod 700 /home/builder/.gnupg
-          sudo -u builder bash -c 'cat > ~/.gnupg/gpg-agent.conf <<EOF
-          allow-loopback-pinentry
-          default-cache-ttl 7200
-          max-cache-ttl 7200
-          EOF'
-          sudo -u builder bash -c 'echo "pinentry-mode loopback" > ~/.gnupg/gpg.conf'
-          sudo -u builder gpg --batch --import /tmp/private.key
-
-          # Find the imported key's ID and tell makepkg to use it.
-          KEY_ID=$(sudo -u builder gpg --list-secret-keys --with-colons \
-                   | awk -F: '/^sec/ {print $5; exit}')
-          echo "Using GPG key: $KEY_ID"
-          # Write makepkg config: signing key, parallel compilation, parallel compression.
+          # BUILDENV default is (!distcc color !ccache check !sign).
+          # Flip !ccache to ccache; cap the cache to stay well under GitHub's
+          # 10 GB per-repo cache quota.
           cat > /home/builder/.makepkg.conf <<EOF
-          GPGKEY="$KEY_ID"
-          MAKEFLAGS="-j$(nproc)"
+          MAKEFLAGS="-j\$(nproc)"
           COMPRESSZST=(zstd -c -z -q --threads=0 -)
+          BUILDENV=(!distcc color ccache check !sign)
           EOF
           chown builder:builder /home/builder/.makepkg.conf
 
-          # Do a throwaway sign so gpg-agent caches the passphrase;
-          # makepkg will then sign without any prompt.
-          echo test | sudo -u builder gpg --batch --pinentry-mode loopback \
-            --passphrase-file /tmp/passphrase \
-            --local-user "$KEY_ID" --output /dev/null --sign -
-
-          rm -f /tmp/private.key /tmp/passphrase
+          sudo -u builder ccache --max-size=2G
+          sudo -u builder ccache --zero-stats
 
       - name: Import upstream source signing keys
-        # Read validpgpkeys from the PKGBUILD and fetch each from a keyserver
-        # so makepkg can verify upstream source signatures (e.g. the kernel tarball).
         run: |
           sudo -u builder bash -c '
             set -e
@@ -100,18 +85,70 @@ jobs:
             fi
           '
 
-      - name: Build and sign the package
+      - name: Build the package
         env:
           BUILD_DOCS: 1
-        # -s installs missing dependencies, --sign signs the built package.
-        run: sudo -u builder makepkg -s --noconfirm --clean --sign
+        run: sudo -u builder makepkg -s --noconfirm --clean
 
-      - name: List build artifacts (for logs)
-        run: ls -lh *.pkg.tar.zst *.pkg.tar.zst.sig
+      - name: ccache statistics
+        run: sudo -u builder ccache --show-stats
 
-      - name: Attach package and signature to GitHub Release
-        # Only create a release when we were triggered by a tag push.
-        if: startsWith(github.ref, 'refs/tags/')
+      - name: Upload built packages as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: arch-packages
+          path: '*.pkg.tar.zst'
+          if-no-files-found: error
+          retention-days: 7
+
+  # ---------------------------------------------------------------------------
+  # Sign & release job: downloads the built packages, signs each one directly
+  # with gpg (so errors surface clearly), and publishes a GitHub Release.
+  # Runs only for tag pushes. If this job fails, re-run just this job from the
+  # Actions UI — no rebuild required.
+  # ---------------------------------------------------------------------------
+  sign-and-release:
+    needs: build
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download built packages
+        uses: actions/download-artifact@v4
+        with:
+          name: arch-packages
+
+      - name: Import GPG signing key
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+        run: |
+          echo "$GPG_PRIVATE_KEY" | gpg --batch --import
+          KEY_ID=$(gpg --list-secret-keys --with-colons \
+                   | awk -F: '/^sec/ {print $5; exit}')
+          echo "GPG_KEY_ID=$KEY_ID" >> "$GITHUB_ENV"
+          echo "Imported key: $KEY_ID"
+
+      - name: Sign each package
+        env:
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: |
+          set -e
+          for pkg in *.pkg.tar.zst; do
+            echo "Signing $pkg"
+            # --passphrase-fd 0 reads the passphrase from stdin on each call,
+            # so we don't depend on gpg-agent caching anything across the job.
+            echo "$GPG_PASSPHRASE" | gpg \
+              --batch --yes --pinentry-mode loopback \
+              --passphrase-fd 0 \
+              --local-user "$GPG_KEY_ID" \
+              --detach-sign --no-armor \
+              --output "${pkg}.sig" "$pkg"
+            # Verify immediately so a bad signature fails this job loudly.
+            gpg --verify "${pkg}.sig" "$pkg"
+          done
+          ls -lh *.pkg.tar.zst *.pkg.tar.zst.sig
+
+      - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           files: |
